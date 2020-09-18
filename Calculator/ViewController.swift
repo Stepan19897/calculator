@@ -83,6 +83,7 @@ class ViewController: UIViewController {
         case "/":
             operateWithTwo{$0 / $1}
         default:
+            print("first commit")
             break
         }
     }
