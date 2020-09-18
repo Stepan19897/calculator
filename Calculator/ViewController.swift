@@ -17,6 +17,7 @@ class ViewController: UIViewController {
     var result: Double = 0
     var currentlyOnDisplay = ""
     var commaPlaced = false
+    let mathematics = Mathematics()
     
     var currentInput: Double {
         get {
@@ -47,7 +48,7 @@ class ViewController: UIViewController {
     @IBAction func digitPressed(_ sender: UIButton) {
         let digit = sender.currentTitle!
         
-        if userIsTyping {
+        if userIsTyping && displayLabel.text != "0" {
             if displayLabel.text!.count < 10   {
                 displayLabel.text = displayLabel.text! + digit
             }
@@ -68,36 +69,32 @@ class ViewController: UIViewController {
     
     
     @IBAction func resultButtonPressed(_ sender: UIButton) {
-        if userIsTyping {
-            secondValue = currentInput
-        }
+        secondValue = currentInput
+        userIsTyping = false
         commaPlaced = false
         
         switch operation {
         case "+":
-            operateWithTwo{$0 + $1}
+            currentInput = mathematics.plus(firstValue: firstValue, secondValue: secondValue)
         case "-":
-            operateWithTwo{$0 - $1}
+            currentInput = mathematics.minus(firstValue: firstValue, secondValue: secondValue)
         case "*":
-            operateWithTwo{$0 * $1}
+            currentInput = mathematics.multiply(firstValue: firstValue, secondValue: secondValue)
         case "/":
-            operateWithTwo{$0 / $1}
+            if secondValue == 0 {
+                print("Error!")
+                clear()
+            } else {
+                currentInput = mathematics.divide(firstValue: firstValue, secondValue: secondValue)
+            }
         default:
-            print("first commit")
-            print("second")
             break
         }
     }
     
     
     @IBAction func clearButtonPressed(_ sender: UIButton) {
-        currentInput = 0
-        displayLabel.text = "0"
-        firstValue = 0
-        secondValue = 0
-        userIsTyping = false
-        operation = ""
-        commaPlaced = false
+        clear()
     }
     
     
@@ -107,9 +104,10 @@ class ViewController: UIViewController {
     
     @IBAction func percentageButtonPressed(_ sender: UIButton) {
         if firstValue == 0 {
-            currentInput = currentInput / 100
+            currentInput = mathematics.percentageForOne(value: currentInput)
         } else {
-            secondValue = firstValue * currentInput / 100
+            secondValue = currentInput
+            currentInput = mathematics.percentageForTwo(firstValue: firstValue, secondValue: secondValue)
         }
         userIsTyping = false
     }
@@ -123,31 +121,20 @@ class ViewController: UIViewController {
         }
     }
     
-    func operateWithTwo(operation: (Double, Double) -> Double) {
-        currentInput = operation(firstValue, secondValue)
+//    func operateWithTwo(operation: (Double, Double) -> Double) {
+//        currentInput = operation(firstValue, secondValue)
+//        userIsTyping = false
+//    }
+    
+    func clear() {
+        currentInput = 0
+        displayLabel.text = "0"
+        firstValue = 0
+        secondValue = 0
         userIsTyping = false
+        operation = ""
+        commaPlaced = false
     }
     
-   //MARK:- enum
-    enum TwoValuesOperaion {
-        case plus(Double, Double), minus(Double, Double), multiply(Double, Double), divide(Double, Double)
-        
-        var evaluate: Any {
-            switch self {
-            case let .plus(firstValue, secondValue):
-                return firstValue + secondValue
-            case let .minus(firstValue, secondValue):
-                return firstValue - secondValue
-            case let .multiply(firstValue, secondValue):
-                return firstValue * secondValue
-            case let .divide(firstValue, secondValue):
-                if secondValue == 0 {
-                    return "dividing on zero!"
-                }
-                let result = Double(firstValue) / Double(secondValue)
-                return result
-            }
-        }
-    }
 }
 
