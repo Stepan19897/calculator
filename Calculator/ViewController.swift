@@ -84,6 +84,7 @@ class ViewController: UIViewController {
             operateWithTwo{$0 / $1}
         default:
             print("first commit")
+            print("second")
             break
         }
     }
