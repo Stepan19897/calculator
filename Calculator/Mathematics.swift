@@ -10,7 +10,7 @@ import Foundation
 
 class Mathematics {
     
-    func plus(firstValue: Double, secondValue: Double) -> Double{
+    static func plus(firstValue: Double, secondValue: Double) -> Double{
         return firstValue + secondValue
     }
     
@@ -27,11 +27,14 @@ class Mathematics {
     }
     
     func percentageForOne(value: Double) -> Double {
-            return value / 100
+        return value / 100
     }
     
     func percentageForTwo(firstValue: Double, secondValue: Double) -> Double {
         return firstValue * secondValue / 100
     }
     
+    func squareRoot(value: Double) -> Double{
+        return sqrt(value)
+    }
 }

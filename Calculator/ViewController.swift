@@ -21,7 +21,9 @@ class ViewController: UIViewController {
     
     var currentInput: Double {
         get {
-            return Double(displayLabel.text!)!
+//            guard let text = Double(displayLabel.text) else { return }
+//            return text
+            return Double(displayLabel.text ?? "") ?? 0.0
         } set {
             let value = String(newValue)
             let valueArray = value.components(separatedBy: ".")
@@ -36,6 +38,8 @@ class ViewController: UIViewController {
     }
 
     @IBOutlet weak var displayLabel: UILabel!
+    @IBOutlet weak var errorLabel: UILabel!
+    @IBOutlet weak var displayErrorLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,7 +50,9 @@ class ViewController: UIViewController {
     
     
     @IBAction func digitPressed(_ sender: UIButton) {
-        let digit = sender.currentTitle!
+        guard let digit = sender.currentTitle else { return }
+        //let digit = sender.currentTitle!
+        displayErrorLabel.isHidden = true
         
         if userIsTyping && displayLabel.text != "0" {
             if displayLabel.text!.count < 10   {
@@ -60,6 +66,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func twoValuesOperation(_ sender: UIButton) {
+        //guard let operation = sender.currentTitle else { return }
         operation = sender.currentTitle!
         firstValue = currentInput
         userIsTyping = false
@@ -75,15 +82,15 @@ class ViewController: UIViewController {
         
         switch operation {
         case "+":
-            currentInput = mathematics.plus(firstValue: firstValue, secondValue: secondValue)
+            currentInput = Mathematics.plus(firstValue: firstValue, secondValue: secondValue)
         case "-":
             currentInput = mathematics.minus(firstValue: firstValue, secondValue: secondValue)
         case "*":
             currentInput = mathematics.multiply(firstValue: firstValue, secondValue: secondValue)
         case "/":
             if secondValue == 0 {
-                print("Error!")
-                clear()
+                displayErrorLabel.text = "Not possible to divide like this😇"
+                displayErrorLabel.isHidden = false
             } else {
                 currentInput = mathematics.divide(firstValue: firstValue, secondValue: secondValue)
             }
@@ -102,6 +109,26 @@ class ViewController: UIViewController {
         currentInput = -currentInput
     }
     
+    @IBAction func sqrtButtonPressed(_ sender: UIButton) {
+        currentInput = mathematics.squareRoot(value: currentInput)
+    }
+    
+    @IBAction func trigonometricFuncPressed(_ sender: UIButton) {
+        let trignometry = sender.currentTitle!
+        switch trignometry {
+        case "sin":
+            currentInput = sin(currentInput)
+        case "cos":
+            currentInput = cos(currentInput)
+        case "tan":
+            currentInput = tan(currentInput)
+        default:
+            break
+        }
+        
+    }
+    
+    
     @IBAction func percentageButtonPressed(_ sender: UIButton) {
         if firstValue == 0 {
             currentInput = mathematics.percentageForOne(value: currentInput)
@@ -113,7 +140,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func dotButtonPressed(_ sender: UIButton) {
-        if userIsTyping && commaPlaced {
+        if userIsTyping, !commaPlaced{
             displayLabel.text! += "."
             commaPlaced = true
         } else if !userIsTyping && !commaPlaced {
@@ -121,10 +148,10 @@ class ViewController: UIViewController {
         }
     }
     
-//    func operateWithTwo(operation: (Double, Double) -> Double) {
-//        currentInput = operation(firstValue, secondValue)
-//        userIsTyping = false
-//    }
+    
+    @IBAction func piButtonPressed(_ sender: UIButton) {
+        currentInput = Double.pi
+    }
     
     func clear() {
         currentInput = 0
@@ -134,6 +161,7 @@ class ViewController: UIViewController {
         userIsTyping = false
         operation = ""
         commaPlaced = false
+        displayErrorLabel.isHidden = true
     }
     
 }
