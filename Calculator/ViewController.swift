@@ -43,11 +43,10 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        print("akjsnfljansmd")
     }
     
     //MARK:- Actions
-    
     
     @IBAction func digitPressed(_ sender: UIButton) {
         guard let digit = sender.currentTitle else { return }
